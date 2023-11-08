@@ -28,4 +28,3 @@ class DbTest extends TestCase
        ]);
    }
 }
-
