@@ -19,6 +19,7 @@
                 <div class="flex mt-2">
                     <a href="{{ route('files.index') }}" class="bg-blue-500 text-white py-2 px-4 rounded mr-2">{{ __('Files') }}</a>
                     <a href="{{ route('files.create') }}" class="bg-green-500 text-white py-2 px-4 rounded">{{ __('Create') }}</a>
+                    <a href="{{ route('places.index') }}" class="bg-green-500 text-white py-2 px-4 rounded">{{ __('Places') }}</a>
                 </div>
             </div>
         </div>
