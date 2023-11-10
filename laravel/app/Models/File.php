@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
+
 class File extends Model
 {
     use HasFactory;
@@ -12,4 +14,8 @@ class File extends Model
         'filepath',
         'filesize',
     ];
+    public function file()
+{
+   return $this->belongsTo(File::class);
+}
 }
