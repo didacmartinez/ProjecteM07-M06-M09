@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\PlaceController;
-
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +20,7 @@ use App\Http\Controllers\PlaceController;
 */
 
 Route::resource('places', PlaceController::class);
+Route::resource('posts', PostController::class);
 
 Route::resource('files', FileController::class)->middleware(['auth', 'role:2']);
 
