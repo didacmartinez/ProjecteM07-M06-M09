@@ -11,7 +11,7 @@
         "file_id",
         "latitude",
         "longitude",
-        "likes_count", // Agrega la columna para el contador de likes
+        "likes_count",
         "created_at",
         "updated_at"
     ];
