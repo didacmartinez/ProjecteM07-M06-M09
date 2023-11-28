@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\File;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class PostController extends Controller
+class PostController extends Controller 
 {
     private bool $_pagination = true;
 
@@ -17,22 +18,88 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+     public function like(Request $request, Post $post)
+{
+    // Verifica si el usuario está autenticado
+    if (auth()->check()) {
+        $user = auth()->user();
+
+        if (!$post->likes()->where('user_id', $user->id)->exists()) {
+            $post->likes()->attach($user->id);
+            $message = 'Has dejado tu like!';
+        } else {
+            $message = 'Ya has dado like a esta publicación!';
+        }
+
+        $post->loadCount('likes');
+
+        // Mira el usuario autenticado
+        $user = auth()->user();
+
+        // Verifica si el usuario que está autenticado ha dado like a la publicación
+        $liked = $user ? $post->likes->contains($user->id) : false;
+
+        return view("posts.show", [
+            'post'    => $post,
+            'file'    => $post->file,
+            'author'  => $post->user,
+            'liked'   => $liked,
+            'message' => $message,
+        ]);
+    } else {
+        // Manejo para usuarios no autenticados (puedes redirigirlos, mostrar un mensaje, etc.)
+        return redirect()->route('login')->with('error', 'Tienes que estar loggeado para dar like!.');
+    }
+}
+
+     
+    public function unlike(Request $request, Post $post)
+    {
+        $user = auth()->user();
+
+        if ($post->likes()->where('user_id', $user->id)->exists()) {
+            // Para quitar like
+            $post->likes()->detach($user->id);
+            $message = 'Has quitado el like de esta publicacion';
+        } else {
+            $message = 'Este usuario no ha dado like anteriormnte!';
+        }
+
+        // Actualizar los likes_count en el modelo Post
+        $post->loadCount('likes');
+
+        // Obtén el usuario autenticado (si estás utilizando autenticación)
+        $user = auth()->user();
+
+        // Verifica si el usuario autenticado ha dado like al post
+        $liked = $user ? $post->likes->contains($user->id) : false;
+
+        return view("posts.show", [
+            'post'    => $post,
+            'file'    => $post->file,
+            'author'  => $post->user,
+            'liked'   => $liked,
+            'message' => $message,
+        ]);
+    }
+
     public function index(Request $request)
     {
-        $collectionQuery = Post::orderBy('created_date', 'desc');
+        $collectionQuery = Post::withCount('likes')->orderBy('created_at', 'desc');
 
         // Filter?
         if ($search = $request->get('search')) {
             $collectionQuery->where('body', 'like', "%{$search}%");
         }
-        
+
         // Pagination
-        $posts = $this->_pagination 
-            ? $collectionQuery->paginate(5)->withQueryString() 
+        $posts = $this->_pagination
+            ? $collectionQuery->paginate(5)->withQueryString()
             : $collectionQuery->get();
-        
+
         return view("posts.index", [
-            "posts" => $posts,
+            "posts"  => $posts,
             "search" => $search
         ]);
     }
@@ -93,7 +160,6 @@ class PostController extends Controller
                 ->with('error', __('ERROR Uploading file'));
         }
     }
-
     /**
      * Display the specified resource.
      *
@@ -102,10 +168,16 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->loadCount('likes');
+        $user = auth()->user();
+
+        $liked = $user ? $post->likes->contains($user->id) : false;
+
         return view("posts.show", [
             'post'   => $post,
             'file'   => $post->file,
             'author' => $post->user,
+            'liked'  => $liked,
         ]);
     }
 
@@ -195,4 +267,5 @@ class PostController extends Controller
             'post' => $post
         ]);
     }
+   
 }

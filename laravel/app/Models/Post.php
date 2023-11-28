@@ -14,7 +14,7 @@ class Post extends Model
         'file_id',
         'latitude',
         'longitude',
-        'author_id'
+        'author_id',
     ];
 
     public function file()
@@ -26,4 +26,22 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'author_id');
     }
+
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'likes');
+    }
+    public function likedBy(User $user)
+    {
+        return $this->likes()->where('user_id', $user->id)->exists();
+    }
+    public function like(User $user)
+    {
+        $this->likes()->attach($user->id);
+    }
+    public function unlike(User $user)
+    {
+        $this->likes()->detach($user->id);
+    }
+
 }

@@ -33,6 +33,10 @@
                     <td>{{ $author->name }}</td>
                 </tr>
                 <tr>
+                    <td><strong>Likes</strong></td>
+                    <td>{{ $post->likes_count }}</td>
+                </tr>
+                <tr>
                     <td><strong>Created</strong></td>
                     <td>{{ $post->created_at }}</td>
                 </tr>
@@ -43,15 +47,30 @@
             </tbody>
         </table>
         <div class="mt-8">
-            <x-primary-button href="{{ route('posts.edit', $post) }}">
-                {{ __('Edit') }}
-            </x-danger-button>
-            <x-danger-button href="{{ route('posts.delete', $post) }}">
-                {{ __('Delete') }}
-            </x-danger-button>
+            @can('update', $post)
+                <x-primary-button href="{{ route('posts.edit', $post) }}">
+                    {{ __('Edit') }}
+                </x-primary-button>
+            @endcan
+            @can('delete', $post)
+                <x-danger-button href="{{ route('posts.delete', $post) }}">
+                    {{ __('Delete') }}
+                </x-danger-button>
+            @endcan
             <x-secondary-button href="{{ route('posts.index') }}">
                 {{ __('Back to list') }}
             </x-secondary-button>
+
+            <!-- Likes, para eliminar y dar like -->
+            <form method="POST" action="{{ $liked ? route('posts.unlike', $post) : route('posts.like', $post) }}" class="mt-4">
+                @csrf
+                @if($liked)
+                    @method('DELETE')
+                @endif
+                <x-primary-button type="submit">
+                    {{ $liked ? 'Unlike' : 'Like' }}
+                </x-primary-button>
+            </form>
         </div>
     @endsection
 </x-columns>
