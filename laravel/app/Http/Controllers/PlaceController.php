@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorite;
 use App\Models\Place;
 use App\Models\File;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ class PlaceController extends Controller
      */
     public function index(Request $request)
     {
-        $collectionQuery = Place::orderBy('created_date', 'desc');
+        $collectionQuery = Place::orderBy('created_at', 'desc');
+
 
         // Filter?
         if ($search = $request->get('search')) {
@@ -105,13 +107,29 @@ class PlaceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Place $place)
-    {
-        return view("places.show", [
-            'place'  => $place,
-            'file'   => $place->file,
-            'author' => $place->user,
-        ]);
-    }
+{
+    // Obtener datos adicionales necesarios, como $file, $favoritesCount, etc.
+    $file = $place->file; // Asumiendo que hay una relación entre Place y File
+    $author = $place->user; // Asumiendo que hay una relación entre Place y User (o el modelo de autor)
+    
+    // Obtener el recuento de favoritos
+    $place->loadCount('favorited');
+    $favoritesCount = $place->favorited_count;
+
+    // Verificar si el lugar está en los favoritos del usuario autenticado
+    $isFavorited = auth()->check() ? $place->favorited->contains(auth()->user()->id) : false;
+
+    return view("places.show", [
+        'place'         => $place,
+        'file'          => $file,
+        'author'        => $author,
+        'favoritesCount'=> $favoritesCount,
+        'isFavorited'   => $isFavorited,
+    ]);
+}
+
+
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -171,6 +189,23 @@ class PlaceController extends Controller
             return redirect()->route("places.create")
                 ->with('error', __('ERROR Uploading file'));
         }
+    }
+
+    public function favorite (Request $request, Place $place){
+        $favorite = Favorite::where('user_id',auth()->user()->id)->where('place_id', $place->id )->first();
+        if($favorite){
+            $favorite->delete();
+            Log::debug("Fav eliminado");
+            return redirect()->back();
+        } else {
+            $favorite = Favorite::create([
+                'user_id' => auth()->user()->id,
+                'place_id' => $place->id,
+            ]);
+            return redirect()->back();
+            Log::debug("Fav creat");
+        }
+
     }
 
     /**

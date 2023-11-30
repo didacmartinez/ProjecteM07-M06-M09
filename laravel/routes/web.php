@@ -74,5 +74,8 @@ Route::resource('places', PlaceController::class)
 
 Route::get('places/{place}/delete', [PlaceController::class, 'delete'])->name('places.delete')
     ->middleware(['auth', 'role.any:' . implode(',', [Role::ADMIN, Role::AUTHOR])]);
+
+Route::post('/places/{place}/favorite', [PlaceController::class, 'favorite'])->name('places.favorite');
+
 // Home
 Route::get('/home', [HomeController::class, 'index'])->name('home');

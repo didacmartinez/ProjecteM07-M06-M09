@@ -37,6 +37,10 @@
                     <td>{{ $author->name }}</td>
                 </tr>
                 <tr>
+                    <td><strong>Favoritos</strong></td>
+                    <td>{{ $place-> favorited }}</td>
+                </tr>
+                <tr>
                     <td><strong>Created</strong></td>
                     <td>{{ $place->created_at }}</td>
                 </tr>
@@ -57,6 +61,15 @@
                 {{ __('Back to list') }}
             </x-secondary-button>
         </div>
+        @php
+            $isFavorited = $place->favorited->contains('id', auth()->id());
+            @endphp
+            <form action="{{ route('places.favorite', ['place' => $place->id]) }}" method="POST">
+                @csrf
+                <button class="text-3xl bg-transparent border-none hover:text-yellow-500 focus:outline-none mb-5">
+                    {{ $isFavorited ? '⭐️' : '✩' }}
+                </button>
+            </form>        
     @endsection
 </x-columns>
 @endsection
