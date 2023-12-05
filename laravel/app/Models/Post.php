@@ -43,5 +43,9 @@ class Post extends Model
     {
         $this->likes()->detach($user->id);
     }
+    public function visibilities()
+    {
+        return $this->belongsTo(Visibility::class, 'visibility_id' );
+    }   
 
 }

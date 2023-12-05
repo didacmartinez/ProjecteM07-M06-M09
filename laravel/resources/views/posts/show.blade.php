@@ -5,48 +5,13 @@
 @endsection
 
 @section('box-content')
-<x-columns columns=2>
-    @section('column-1')
-        <img class="w-full" src="{{ asset('storage/'.$file->filepath) }}" title="Image preview"/>
-    @endsection
-    @section('column-2')
-        <table class="table">
-            <tbody>                
-                <tr>
-                    <td><strong>ID<strong></td>
-                    <td>{{ $post->id }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Body</strong></td>
-                    <td>{{ $post->body }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Lat</strong></td>
-                    <td>{{ $post->latitude }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Lng</strong></td>
-                    <td>{{ $post->longitude }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Author</strong></td>
-                    <td>{{ $author->name }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Likes</strong></td>
-                    <td>{{ $post->likes_count }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Created</strong></td>
-                    <td>{{ $post->created_at }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Updated</strong></td>
-                    <td>{{ $post->updated_at }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="mt-8">
+<div class="flex flex-wrap md:flex-nowrap">
+    <!-- Columna de la Imagen -->
+    <div class="w-full md:w-1/2">
+        <img class="w-full" src="{{ asset('storage/'.$file->filepath) }}" alt="Image preview"/>
+
+        <!-- Botones justo debajo de la imagen -->
+        <div class="my-4">
             @can('update', $post)
                 <x-primary-button href="{{ route('posts.edit', $post) }}">
                     {{ __('Edit') }}
@@ -61,8 +26,8 @@
                 {{ __('Back to list') }}
             </x-secondary-button>
 
-            <!-- Likes, para eliminar y dar like -->
-            <form method="POST" action="{{ $liked ? route('posts.unlike', $post) : route('posts.like', $post) }}" class="mt-4">
+            <!-- Botón de Likes -->
+            <form method="POST" action="{{ $liked ? route('posts.unlike', $post) : route('posts.like', $post) }}" class="inline-block">
                 @csrf
                 @if($liked)
                     @method('DELETE')
@@ -72,6 +37,20 @@
                 </x-primary-button>
             </form>
         </div>
-    @endsection
-</x-columns>
+    </div>
+
+    <!-- Columna de Contenido -->
+    <div class="w-full md:w-1/2 md:pl-4">
+        <!-- Título y descripción -->
+        <div class="mb-4">
+            <h2 class="text-2xl font-bold">{{ $post->title }}</h2>
+            <p class="text-lg">{{ $post->body }}</p>
+        </div>
+
+        <!-- Likes -->
+        <div class="mb-4">
+            <strong>Likes: </strong>{{ $post->likes_count }}
+        </div>
+    </div>
+</div>
 @endsection

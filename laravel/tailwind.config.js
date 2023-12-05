@@ -14,8 +14,18 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                'mi-color': '#7FE8FF',
+                'color-2': '#A8FFF5',
+                'blanco': '#FFFFFF',
+                'negro': '#000000',
+                'gris': '#D9D9D9',
+                'rojo': '#FF0000',
+                'morado': '#5E17EB',
+            },
         },
     },
 
     plugins: [forms],
 };
+

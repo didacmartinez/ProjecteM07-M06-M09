@@ -10,6 +10,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
 
 use App\Models\Role;
 
@@ -79,3 +80,9 @@ Route::post('/places/{place}/favorite', [PlaceController::class, 'favorite'])->n
 
 // Home
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+Route::get('/languaje/{locale}', [LanguageController::class, 'languaje'])->name('languaje');
+
+Route::get('/about', [AboutController::class, 'about'])->name('about');
+

@@ -122,11 +122,23 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        // Eliminar fitxer del disc i BD
-        $file->diskDelete();
-        // Patró PRG amb missatge d'èxit
-        return redirect()->route("files.index")
-            ->with('success', __("File succesfully deleted."));
+        $file = File::findOrFail($id);
+
+        // Intenta eliminar el fitxer del disc
+        $deletedFromDisk = Storage::disk('public')->delete($file->filepath);
+
+        if ($deletedFromDisk) {
+            // Si va bé, eliminar el registre de la BD
+            $file->delete();
+
+            // Redirigir a index amb missatge d'èxit
+            return redirect()->route('files.index')
+                ->with('success', 'File successfully deleted');
+        } else {
+            // En cas contrari, redirigir a show amb missatge d'error
+            return redirect()->route('files.show', $file)
+                ->with('error', 'ERROR deleting file');
+        }
     }
     
     /**

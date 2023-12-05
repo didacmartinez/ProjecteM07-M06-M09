@@ -8,18 +8,9 @@ use App\Mail\TestMail;
 
 class MailController extends Controller
 {
-    public function test(Request $request)
+    public function index()
     {
-        try {
-            $mail = new TestMail([
-                'name' => 'Anonymous',
-                'body' => 'Testing mail',
-                'url'  => '/'
-            ]);
-            Mail::to('jmir-laravel@mailinator.com')->send($mail);
-            echo '<h1>Mail send successfully</h1>';
-        } catch (\Exception $e) {
-            echo '<pre>Error - ' . $e .'</pre>';
-        }
+        $availableLocales = ['en', 'es', 'fr'];  
+        return view('tu_vista')->with('availableLocales', $availableLocales);
     }
 }

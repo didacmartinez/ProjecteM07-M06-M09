@@ -25,6 +25,12 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+                <!-- Nueva sección para el logo y botones -->
+                <div class="bg-blue-500 p-4 text-white">
+                    <img src="{{ asset('img/1.png') }}" alt="Mi Logo" class="h-12 w-auto mb-2">
+                </div>
+            </div>
             @include('layouts.navigation')
 
             <!-- Page Heading -->

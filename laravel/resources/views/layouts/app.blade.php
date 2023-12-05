@@ -22,6 +22,7 @@
             <link rel="stylesheet" href="{{ asset('build/'.$manifest['resources/css/app.css']['file']) }}">
             <script type="module" src="{{ asset('build/'.$manifest['resources/js/app.js']['file']) }}"></script>
         @endenv
+        
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -35,7 +36,7 @@
                     </div>
                 </header>
             @endif
-
+            <x-language-switcher />
             <!-- Page Content -->
             <main>
                 @include('partials.flash')
